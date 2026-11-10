@@ -37,6 +37,7 @@ IMPLICIT NONE
 PRIVATE
 
 PUBLIC :: ukca_offline_oxidants_diags
+PUBLIC :: ukca_offline_oxidants_add_diags
 
 INTEGER (KIND=jpim), PARAMETER :: zhook_in  = 0
 INTEGER (KIND=jpim), PARAMETER :: zhook_out = 1
@@ -168,5 +169,91 @@ END DO       ! item
 IF (lhook) CALL dr_hook(ModuleName//':'//RoutineName, zhook_out, zhook_handle)
 
 END SUBROUTINE ukca_offline_oxidants_diags
+
+SUBROUTINE ukca_offline_oxidants_add_diags(row_length, rows, model_levels,     &
+  totnodens, cl_offline_diag, o1d_offline_diag,                                &
+  len_stashwork,STASHwork50)
+! ---------------------------------------------------------------------
+! Description:
+!  To place additional offline oxidants fields that are used for methane loss
+!  in offline oxidants scheme into the section 50 STASHwork array
+! Method:
+!  For the oxidants which are constant fields, the diagnostic fields are
+!  allocated and filled in routine UKCA_SET_DIURNAL_OX.
+! ---------------------------------------------------------------------
+
+USE ukca_constants,      ONLY: c_cl, c_o1d
+USE ukca_um_legacy_mod,  ONLY: len_stlist, stindex, stlist, num_stash_levels,  &
+                               stash_levels, si, sf, si_last, copydiag_3d,     &
+                               UKCA_diag_sect
+
+IMPLICIT NONE
+
+! Input arguments
+INTEGER, INTENT(IN) :: row_length         ! No. of rows
+INTEGER, INTENT(IN) :: rows               ! No. of columns
+INTEGER, INTENT(IN) :: model_levels       ! No. of levels
+INTEGER, INTENT(IN) :: len_stashwork      ! Length of stashwork array
+! Density in molecules/m^3
+REAL, INTENT(IN)    :: totnodens(row_length,rows,model_levels)
+! Diagnostic fields (mass mixing ratio)
+
+REAL, INTENT(IN) :: cl_offline_diag(row_length*rows,model_levels)  ! Cl diag
+REAL, INTENT(IN) :: o1d_offline_diag(row_length*rows,model_levels) ! O(1D) diag
+
+REAL, INTENT(IN OUT) :: STASHwork50(len_stashwork)  ! Work array
+
+! Local variables
+
+INTEGER :: section                        ! Stash section
+INTEGER :: item                           ! Stash item
+INTEGER :: im_index                       ! internal model index
+INTEGER :: k                              ! loop index
+
+REAL :: field3d(row_length,rows,model_levels)  ! To contain 3d diagnostic
+
+REAL (KIND=jprb)   :: zhook_handle
+
+CHARACTER(LEN=*), PARAMETER :: RoutineName='UKCA_OFFLINE_OXIDANTS_DIAGS'
+
+IF (lhook) CALL dr_hook(ModuleName//':'//RoutineName, zhook_in, zhook_handle)
+
+im_index = 1
+
+! Offline oxidant diagnostics
+
+section = ukca_diag_sect
+
+DO item = 260,261
+  IF (sf(item,section) .AND. item == 260) THEN
+    DO k=1,model_levels
+      field3d(:,:,k) = RESHAPE(cl_offline_diag(:,k),[row_length,rows])*        &
+        c_cl/(totnodens(:,:,k)/1.0e6)
+    END DO
+
+    CALL copydiag_3d (stashwork50(si(item,section,im_index):                   &
+         si_last(item,section,im_index)),                                      &
+      field3d,                                                                 &
+      row_length,rows,model_levels,                                            &
+      stlist(:,stindex(1,item,section,im_index)),len_stlist,                   &
+      stash_levels,num_stash_levels+1)
+  ELSE IF (sf(item,section) .AND. item == 261) THEN
+    DO k=1,model_levels
+      field3d(:,:,k) = RESHAPE(o1d_offline_diag(:,k),[row_length,rows])*       &
+        c_o1d/(totnodens(:,:,k)/1.0e6)
+    END DO
+
+    CALL copydiag_3d (stashwork50(si(item,section,im_index):                   &
+         si_last(item,section,im_index)),                                      &
+      field3d,                                                                 &
+      row_length,rows,model_levels,                                            &
+      stlist(:,stindex(1,item,section,im_index)),len_stlist,                   &
+      stash_levels,num_stash_levels+1)
+  END IF
+END DO       ! item
+
+IF (lhook) CALL dr_hook(ModuleName//':'//RoutineName, zhook_out, zhook_handle)
+
+END SUBROUTINE ukca_offline_oxidants_add_diags
 
 END MODULE ukca_offline_oxidants_diags_mod

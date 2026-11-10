@@ -407,6 +407,10 @@ REAL, ALLOCATABLE, TARGET, SAVE, PUBLIC :: o3_offline(:,:,:)
   ! mass_fraction_of_ozone_in_air [CF] {UM:00060}
 REAL, ALLOCATABLE, TARGET, SAVE, PUBLIC :: oh_offline(:,:,:)
   ! Hydroxyl radical as offline oxidant (kg/kg-air)
+REAL, ALLOCATABLE, TARGET, SAVE, PUBLIC :: cl_offline(:,:,:)
+  ! Atomic chlorine as offline oxidant (kg/kg-air)
+REAL, ALLOCATABLE, TARGET, SAVE, PUBLIC :: o1d_offline(:,:,:)
+  ! Singlet oxygen as offline oxidant (kg/kg-air)
 
 ! --- 4D fields of type real ---
 REAL, ALLOCATABLE, TARGET, SAVE, PUBLIC :: photol_rates(:,:,:,:)

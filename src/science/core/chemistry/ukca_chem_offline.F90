@@ -66,6 +66,8 @@ REAL, PUBLIC, ALLOCATABLE, SAVE :: o3_offline_diag(:,:)   ! O3 diagnostic
 REAL, PUBLIC, ALLOCATABLE, SAVE :: oh_offline_diag(:,:)   ! OH diagnostic
 REAL, PUBLIC, ALLOCATABLE, SAVE :: no3_offline_diag(:,:)  ! NO3 diagnostic
 REAL, PUBLIC, ALLOCATABLE, SAVE :: ho2_offline_diag(:,:)  ! HO2 diagnostic
+REAL, PUBLIC, ALLOCATABLE, SAVE :: cl_offline_diag(:,:)   ! Cl diagnostic
+REAL, PUBLIC, ALLOCATABLE, SAVE :: o1d_offline_diag(:,:)  ! O(1D) diagnostic
 
 ! The CHCH definitions array lists the species used by the chemical solver.
 ! The elements of the chch_t type are:

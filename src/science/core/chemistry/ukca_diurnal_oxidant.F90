@@ -63,7 +63,8 @@ SUBROUTINE ukca_set_diurnal_ox(species, field, n_points, nlev)
 ! the diurnal profile is proportional to cos(zenith angle).
 
 USE ukca_chem_offline,        ONLY: o3_offline_diag, oh_offline_diag,          &
-                                    no3_offline_diag, ho2_offline_diag
+                                    no3_offline_diag, ho2_offline_diag,        &
+                                    cl_offline_diag, o1d_offline_diag
 USE ukca_constants,           ONLY: rsec_per_day, pi
 USE ereport_mod,              ONLY: ereport
 
@@ -90,8 +91,8 @@ CHARACTER(LEN=*), PARAMETER :: RoutineName='UKCA_SET_DIURNAL_OX'
 
 IF (lhook) CALL dr_hook(ModuleName//':'//RoutineName,zhook_in,zhook_handle)
 
-SELECT CASE(species(1:4))
-CASE ('OH  ','HO2 ')
+SELECT CASE(species(1:5))
+CASE ('OH   ','HO2  ')
 
   ! Scale the field according to cos(zenith angle)/integral(cos(zenith_angle))
   ! Night time values are zero
@@ -101,7 +102,7 @@ CASE ('OH  ','HO2 ')
     field(:) = 0.0
   END WHERE
 
-CASE ('NO3 ')
+CASE ('NO3  ')
 
   ! convert from radians to seconds
   daylen_secs = daylength1d*rsec_per_day/(2.0*pi)
@@ -117,9 +118,12 @@ CASE ('NO3 ')
     field(:) = 0.0
   END WHERE
 
-CASE ('O3  ')
+CASE ('O3   ')
   ! No diurnal profile for O3
 
+CASE ('Cl   ', 'O(1D)')
+  ! No diurnal profile for Cl and O(1D), change this later?!?
+      
 CASE DEFAULT
 
   cmessage = 'ukca_set_diurnal_ox: Species: '//species//' not found'
@@ -134,15 +138,19 @@ WHERE (field < 0.0)
 END WHERE
 
 ! Set diagnostic fields
-SELECT CASE(species(1:4))
-CASE ('O3  ')
+SELECT CASE(species(1:5))
+CASE ('O3   ')
   o3_offline_diag(:,nlev) = field(:)
-CASE ('OH  ')
+CASE ('OH   ')
   oh_offline_diag(:,nlev) = field(:)
-CASE ('NO3 ')
+CASE ('NO3  ')
   no3_offline_diag(:,nlev) = field(:)
-CASE ('HO2 ')
+CASE ('HO2  ')
   ho2_offline_diag(:,nlev) = field(:)
+CASE ('Cl   ')
+  cl_offline_diag(:,nlev) = field(:)
+CASE ('O(1D)')
+  o1d_offline_diag(:,nlev) = field(:)
 END SELECT
 
 IF (lhook) CALL dr_hook(ModuleName//':'//RoutineName,zhook_out,zhook_handle)
@@ -159,7 +167,8 @@ SUBROUTINE ukca_set_diurnal_ox_col(species, field, n_points, ix, jy)
 
 USE ukca_config_specification_mod, ONLY: ukca_config
 USE ukca_chem_offline,      ONLY: o3_offline_diag, oh_offline_diag,            &
-                                  no3_offline_diag, ho2_offline_diag
+                                  no3_offline_diag, ho2_offline_diag,          &
+                                  cl_offline_diag, o1d_offline_diag
 USE ukca_constants,         ONLY: rsec_per_day, pi
 USE ereport_mod,            ONLY: ereport
 
@@ -193,8 +202,8 @@ IF (lhook) CALL dr_hook(ModuleName//':'//RoutineName,zhook_in,zhook_handle)
 ! get mapping from theta_field to proper x*y. Field is 1 column here!
 location = ix + ((jy - 1)*ukca_config%row_length)
 
-SELECT CASE(species(1:4))
-CASE ('OH  ','HO2 ')
+SELECT CASE(species(1:5))
+CASE ('OH   ','HO2  ')
 
   ! Scale the field according to cos(zenith angle)/integral(cos(zenith_angle))
   ! Night time values are zero
@@ -204,7 +213,7 @@ CASE ('OH  ','HO2 ')
     field(:) = 0.0
   END IF
 
-CASE ('NO3 ')
+CASE ('NO3  ')
 
   ! convert from radians to seconds
   daylen_secs = daylength1d(location)*rsec_per_day / (2.0*pi)
@@ -218,9 +227,12 @@ CASE ('NO3 ')
     field(:) = 0.0
   END IF
 
-CASE ('O3  ')
+CASE ('O3   ')
   ! No diurnal profile for O3
 
+CASE ('Cl   ', 'O(1D)')
+  ! No diurnal profile for Cl and O(1D), change this later?!?
+   
 CASE DEFAULT
 
   cmessage = 'ukca_set_diurnal_ox: Species: '//species//' not found'
@@ -235,15 +247,19 @@ WHERE (field < 0.0)
 END WHERE
 
 ! Set diagnostic fields
-SELECT CASE(species(1:4))
-CASE ('O3  ')
+SELECT CASE(species(1:5))
+CASE ('O3   ')
   o3_offline_diag(location,:) = field(:)
-CASE ('OH  ')
+CASE ('OH   ')
   oh_offline_diag(location,:) = field(:)
-CASE ('NO3 ')
+CASE ('NO3  ')
   no3_offline_diag(location,:) = field(:)
-CASE ('HO2 ')
+CASE ('HO2  ')
   ho2_offline_diag(location,:) = field(:)
+CASE ('Cl   ')
+  cl_offline_diag(location,:) = field(:)
+CASE ('O(1D)')
+  o1d_offline_diag(location,:) = field(:)
 END SELECT
 
 IF (lhook) CALL dr_hook(ModuleName//':'//RoutineName,zhook_out,zhook_handle)

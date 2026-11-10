@@ -222,6 +222,8 @@ TYPE :: ukca_config_spec_type
                                        ! from isoprene
   REAL :: dry_depvel_so2_scaling       ! SO2 dry deposition velocity scaling
                                        ! factor
+  LOGICAL :: l_ukca_offline_ch4        ! True to include methane loss reactions
+                                       ! in offline oxidants scheme
 
   ! -- Chemistry - Heterogeneous chemistry --
 
@@ -882,6 +884,7 @@ ukca_config%soa_yield_scaling_mt = rmdi
 ukca_config%l_ukca_scale_soa_yield_isop = .FALSE.
 ukca_config%soa_yield_scaling_isop = rmdi
 ukca_config%dry_depvel_so2_scaling = rmdi
+ukca_config%l_ukca_offline_ch4 = .FALSE.
 
 ! -- Chemistry - Heterogeneous chemistry --
 ukca_config%l_ukca_het_psc = .FALSE.
@@ -1142,6 +1145,7 @@ SUBROUTINE ukca_get_config(                                                    &
    l_ukca_ro2_ntp, l_ukca_ro2_perm,                                            &
    l_ukca_intph,ph_fit_coeff_a,ph_fit_coeff_b,ph_fit_intercept,                &
    l_ukca_scale_soa_yield_mt,l_ukca_scale_soa_yield_isop,                      &
+   l_ukca_offline_ch4,                                                         &
    l_ukca_het_psc,                                                             &
    l_ukca_limit_nat,                                                           &
    l_ukca_sa_clim,                                                             &
@@ -1349,6 +1353,7 @@ LOGICAL, OPTIONAL, INTENT(OUT) :: l_ukca_ro2_perm
 LOGICAL, OPTIONAL, INTENT(OUT) :: l_ukca_intph
 LOGICAL, OPTIONAL, INTENT(OUT) :: l_ukca_scale_soa_yield_mt
 LOGICAL, OPTIONAL, INTENT(OUT) :: l_ukca_scale_soa_yield_isop
+LOGICAL, OPTIONAL, INTENT(OUT) :: l_ukca_offline_ch4
 LOGICAL, OPTIONAL, INTENT(OUT) :: l_ukca_het_psc
 LOGICAL, OPTIONAL, INTENT(OUT) :: l_ukca_limit_nat
 LOGICAL, OPTIONAL, INTENT(OUT) :: l_ukca_sa_clim
@@ -1581,6 +1586,8 @@ IF (PRESENT(soa_yield_scaling_isop))                                           &
   soa_yield_scaling_isop = ukca_config%soa_yield_scaling_isop
 IF (PRESENT(dry_depvel_so2_scaling))                                           &
   dry_depvel_so2_scaling = ukca_config%dry_depvel_so2_scaling
+IF (PRESENT(l_ukca_offline_ch4))                                               &
+  l_ukca_offline_ch4 = ukca_config%l_ukca_offline_ch4
 
 ! -- Chemistry - Heterogeneous chemistry --
 IF (PRESENT(l_ukca_het_psc)) l_ukca_het_psc = ukca_config%l_ukca_het_psc

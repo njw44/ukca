@@ -164,6 +164,7 @@ SUBROUTINE ukca_setup(error_code,                                              &
                       l_ukca_intph,                                            &
                       l_ukca_scale_soa_yield_mt,                               &
                       l_ukca_scale_soa_yield_isop,                             &
+                      l_ukca_offline_ch4,                                      &
                       l_ukca_het_psc,                                          &
                       l_ukca_limit_nat,                                        &
                       l_ukca_sa_clim,                                          &
@@ -494,6 +495,7 @@ LOGICAL, OPTIONAL, INTENT(IN) :: l_tracer_lumping
 LOGICAL, OPTIONAL, INTENT(IN) :: l_ukca_ro2_ntp
 LOGICAL, OPTIONAL, INTENT(IN) :: l_ukca_ro2_perm
 LOGICAL, OPTIONAL, INTENT(IN) :: l_ukca_intph
+LOGICAL, OPTIONAL, INTENT(IN) :: l_ukca_offline_ch4
 LOGICAL, OPTIONAL, INTENT(IN) :: l_ukca_het_psc
 LOGICAL, OPTIONAL, INTENT(IN) :: l_ukca_limit_nat
 LOGICAL, OPTIONAL, INTENT(IN) :: l_ukca_sa_clim
@@ -945,6 +947,9 @@ IF (ukca_config%i_ukca_chem /= i_ukca_chem_off) THEN
     IF (PRESENT(dry_depvel_so2_scaling))                                       &
       ukca_config%dry_depvel_so2_scaling = dry_depvel_so2_scaling
   END IF
+
+  IF (PRESENT(l_ukca_offline_ch4))                                             &
+    ukca_config%l_ukca_offline_ch4 = l_ukca_offline_ch4
 
   ! -- Chemistry - Heterogeneous chemistry --
 

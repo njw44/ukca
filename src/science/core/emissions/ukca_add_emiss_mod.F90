@@ -762,7 +762,9 @@ IF (ukca_config%l_ukca_chem) THEN
     !   area and timestep, to turn it into a surface emission rate.
     !   No emissions for other model levels
     IF (ukca_config%l_ukca_strat .OR. ukca_config%l_ukca_stratcfc .OR.         &
-        ukca_config%l_ukca_strattrop .OR. ukca_config%l_ukca_cristrat) THEN
+        ukca_config%l_ukca_strattrop .OR. ukca_config%l_ukca_cristrat .OR.     &
+        ( ukca_config%l_ukca_offline .AND. ukca_config%l_ukca_offline_ch4 ) )  &
+        THEN
       DO l = 1, n_boundary_vals
 
         IF (ukca_config%l_ukca_emsdrvn_ch4) THEN

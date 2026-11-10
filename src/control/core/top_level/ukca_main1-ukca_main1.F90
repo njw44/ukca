@@ -182,9 +182,10 @@ USE ukca_tropopause,        ONLY:                                              &
 
 USE ukca_mode_verbose_mod,  ONLY: glob_verbose
 USE ukca_chem_offline,      ONLY: o3_offline_diag, oh_offline_diag,            &
-                                  no3_offline_diag, ho2_offline_diag
-USE ukca_offline_oxidants_diags_mod, ONLY: ukca_offline_oxidants_diags
-
+                                  no3_offline_diag, ho2_offline_diag,          &
+                                  cl_offline_diag, o1d_offline_diag
+USE ukca_offline_oxidants_diags_mod, ONLY: ukca_offline_oxidants_diags,        &
+                                           ukca_offline_oxidants_add_diags
 USE ukca_config_defs_mod,   ONLY:                                              &
     n_chem_tracers,         n_aero_tracers,         em_chem_spec,              &
     n_boundary_vals,        lbc_mmr,                n_mode_tracers,            &
@@ -2128,6 +2129,16 @@ IF (ukca_config%l_ukca_chem) THEN
       oh_offline_diag(:,:) = 0.0
       no3_offline_diag(:,:) = 0.0
       ho2_offline_diag(:,:) = 0.0
+      IF (ukca_config%l_ukca_offline_ch4) THEN
+        ! Allocate diagnostic arrays for offline Cl and O(1D)   
+        IF (.NOT. ALLOCATED(cl_offline_diag))                                  &
+          ALLOCATE(cl_offline_diag(theta_field_size,1:model_levels))
+        IF (.NOT. ALLOCATED(o1d_offline_diag))                                 &
+          ALLOCATE(o1d_offline_diag(theta_field_size,1:model_levels))
+        ! Initialise to zero
+        cl_offline_diag(:,:) = 0.0
+        o1d_offline_diag(:,:) = 0.0
+      END IF
     END IF
 
     ! Persistence of spatial fields between timesteps will be turned off
@@ -2474,6 +2485,15 @@ IF (ukca_config%l_ukca_chem) THEN
       DEALLOCATE(oh_offline_diag)
       DEALLOCATE(no3_offline_diag)
       DEALLOCATE(ho2_offline_diag)
+
+      IF (ukca_config%l_ukca_offline_ch4) THEN
+        CALL ukca_offline_oxidants_add_diags(row_length, rows, model_levels,   &
+                                       totnodens,                              &
+                                       cl_offline_diag, o1d_offline_diag,      &
+                                       SIZE(stashwork50), stashwork50)
+        DEALLOCATE(cl_offline_diag)
+        DEALLOCATE(o1d_offline_diag)
+      END IF
     END IF
 
   ELSE

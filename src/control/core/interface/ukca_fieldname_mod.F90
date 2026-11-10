@@ -554,6 +554,8 @@ CHARACTER(LEN=*), PARAMETER :: fldname_ho2_offline  = 'HO2'
 CHARACTER(LEN=*), PARAMETER :: fldname_no3_offline  = 'NO3'
 CHARACTER(LEN=*), PARAMETER :: fldname_o3_offline   = 'O3'
 CHARACTER(LEN=*), PARAMETER :: fldname_oh_offline   = 'OH'
+CHARACTER(LEN=*), PARAMETER :: fldname_cl_offline   = 'Cl'
+CHARACTER(LEN=*), PARAMETER :: fldname_o1d_offline   = 'O(1D)'
 
 ! --- 4D fields of type real ---
 CHARACTER(LEN=*), PARAMETER :: fldname_photol_rates = 'photol_rates'

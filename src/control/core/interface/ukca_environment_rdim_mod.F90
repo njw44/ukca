@@ -115,6 +115,8 @@ USE ukca_fieldname_mod,  ONLY:                                                 &
   fldname_no3_offline,                                                         &
   fldname_o3_offline,                                                          &
   fldname_oh_offline,                                                          &
+  fldname_cl_offline,                                                          &
+  fldname_o1d_offline,                                                         &
   fldname_dust_div1,                                                           &
   fldname_dust_div2,                                                           &
   fldname_dust_div3,                                                           &
@@ -218,6 +220,8 @@ USE ukca_environment_fields_mod, ONLY:                                         &
   no3_offline,                                                                 &
   o3_offline,                                                                  &
   oh_offline,                                                                  &
+  cl_offline,                                                                  &
+  o1d_offline,                                                                  &
   dust_div1,                                                                   &
   dust_div2,                                                                   &
   dust_div3,                                                                   &
@@ -773,6 +777,12 @@ CASE (fldname_o3_offline)
 CASE (fldname_oh_offline)
   CALL set_field_3d_from_1d_real(i_field, i1, i2, j1, j2, k1, k2, field_data,  &
                                  oh_offline)
+CASE (fldname_cl_offline)
+  CALL set_field_3d_from_1d_real(i_field, i1, i2, j1, j2, k1, k2, field_data,  &
+                                 cl_offline)
+CASE (fldname_o1d_offline)
+  CALL set_field_3d_from_1d_real(i_field, i1, i2, j1, j2, k1, k2, field_data,  &
+                                 o1d_offline)
 CASE (fldname_grid_area_fullht)
   CALL set_field_3d_from_1d_real(i_field, i1, i2, j1, j2, k1, k2, field_data,  &
                                  grid_area_fullht)

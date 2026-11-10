@@ -51,9 +51,9 @@ SUBROUTINE asad_inicnt_col( species, y_out, klen, ix, jy )
 
 USE asad_mod,              ONLY: wp, co2, tnd, nlfro2, f, jpro2
 USE ukca_config_specification_mod, ONLY: ukca_config
-USE ukca_constants,        ONLY: c_oh, c_o3, c_no3, c_ho2
+USE ukca_constants,        ONLY: c_oh, c_o3, c_no3, c_ho2, c_cl, c_o1d
 USE ukca_environment_fields_mod,     ONLY: o3_offline, oh_offline,             &
-                           no3_offline, ho2_offline
+                           no3_offline, ho2_offline, cl_offline, o1d_offline
 USE parkind1, ONLY: jprb, jpim
 USE yomhook, ONLY: lhook, dr_hook
 USE ereport_mod, ONLY: ereport
@@ -136,6 +136,12 @@ ELSE IF (ukca_config%l_ukca_offline .OR. ukca_config%l_ukca_offline_be) THEN
   ELSE IF (species(1:4) == 'HO2 ') THEN
     y_out(:) = ho2_offline(ix,jy,:)
     y_out(:) = y_out(:)/c_ho2
+  ELSE IF (species(1:4) == 'Cl  ') THEN
+    y_out(:) = cl_offline(ix,jy,:)
+    y_out(:) = y_out(:)/c_cl
+  ELSE IF (species(1:5) == 'O(1D)') THEN
+    y_out(:) = o1d_offline(ix,jy,:)
+    y_out(:) = y_out(:)/c_o1d
   ELSE
     errcode = 125
     cmessage = ' Species '//species//' is not treated by this routine'
