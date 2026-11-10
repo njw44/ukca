@@ -364,6 +364,14 @@ REAL, PARAMETER :: c_dhpr12o2   = 6.252
 REAL, PARAMETER :: c_ru10ao2    = 4.111
 REAL, PARAMETER :: c_maco3      = 3.489
 
+! Extra species for methane isotopologue scheme
+! Currently offline oxidant chemistry only.
+REAL, PARAMETER :: c_12ch4  = 0.5523  ! 
+REAL, PARAMETER :: c_13ch4  = 0.5868  ! 
+REAL, PARAMETER :: c_12ch3d = 0.5868  ! 
+REAL, PARAMETER :: c_13ch3d = 0.5868  ! 
+REAL, PARAMETER :: c_14ch4  = 0.6213  ! 
+REAL, PARAMETER :: c_sf6    = 5.040   ! 
 
 ! Define conversion factor for all other common representative
 ! intermediate (CRI) species, as these do not have defined
@@ -622,6 +630,14 @@ REAL, PARAMETER :: m_dhpr12o2   = 181.119
 REAL, PARAMETER :: m_ru10ao2    = 119.096
 REAL, PARAMETER :: m_maco3      = 101.081
 
+! Extra sepcies for methane isotopologue scheme
+! Currently offline oxidant chemistry only
+REAL, PARAMETER :: m_12ch4  = 16.000   
+REAL, PARAMETER :: m_13ch4  = 17.000   
+REAL, PARAMETER :: m_12ch3d = 17.000   
+REAL, PARAMETER :: m_13ch3d = 18.000   
+REAL, PARAMETER :: m_14ch4  = 18.000   
+REAL, PARAMETER :: m_sf6    = 146.000  
 
 !   Define dummy molar mass for all common representative intermediate species
 !   in CRI mechanism, as these do not have defined molecular masses.

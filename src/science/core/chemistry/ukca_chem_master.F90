@@ -102,9 +102,10 @@ INTEGER, PARAMETER :: rm = 1024   ! Used to remove reactions that existed at
                                   ! previous chemistry versions but not at
                                   ! later ones
 INTEGER, PARAMETER :: olch4 = 2048 ! Include methane loss on offline oxidants scheme
+INTEGER, PARAMETER :: olch4iso = 4096 ! Include methane isotopologues in offline oxidants scheme
 
 ! Define size of master chemistry
-INTEGER, PARAMETER :: n_chch_master = 361 ! number of known species
+INTEGER, PARAMETER :: n_chch_master = 367 ! number of known species
 INTEGER, PARAMETER :: n_het_master  =  18 ! number of heterogeneous reactions
 INTEGER, PARAMETER :: n_dry_master  = 163 ! number of dry deposition reactions
 INTEGER, PARAMETER :: n_wet_master  = 160 ! number of wet deposition reactions
@@ -149,6 +150,14 @@ TYPE(rath_t1) :: last_het
 TYPE(depvel_t):: last_depvel
 TYPE(wetdep)  :: last_wetdep
 
+! Set methane isotopologue reaction rates
+! --- Kinetic Isotope Effect (KIE) Parameters ---
+REAL, PARAMETER :: k_ch4_oh_a   = 2.45e-12
+REAL, PARAMETER :: kie_13c_oh   = 0.996
+REAL, PARAMETER :: k_13ch4_oh_a = k_ch4_oh_a * kie_13c_oh
+
+
+
 INTEGER(KIND=jpim), PARAMETER :: zhook_in  = 0
 INTEGER(KIND=jpim), PARAMETER :: zhook_out = 1
 REAL(KIND=jprb)               :: zhook_handle
@@ -184,7 +193,8 @@ chch_t1( 1,'O(3P)     ',1,'SS        ','Ox        ',0,0,ti+t+r,0,0,107),       &
 chch_t1( 2,'O(1D)     ',1,'SS        ','Ox        ',0,0,ti+s+t+st+r+cs,        &
                                                                 0,0,107),      &
 !   2
-chch_t1( 2,'O(1D)     ',1,'CF        ','Ox        ',0,0,ol,olch4,0,107),       &
+chch_t1( 2,'O(1D)     ',1,'CF        ','Ox        ',0,0,ol,olch4+olch4iso,     &
+                                                                0,107),        &
 !   3 DD:  1,
 chch_t1( 3,'O3        ',1,'TR        ','Ox        ',1,0,ti+s+t+st+r+cs,        &
                                                                 0,a,107),      &
@@ -278,7 +288,8 @@ chch_t1(20,'HO2       ',1,'CF        ','HOx       ',0,0,ol,0,0,107),           &
 !  21
 chch_t1(21,'Cl        ',1,'TR        ','Clx       ',0,0,s+st+cs,0,0,107),      &
 !  21
-chch_t1(21,'Cl        ',1,'CF        ','Clx       ',0,0,ol,olch4,0,107),       &
+chch_t1(21,'Cl        ',1,'CF        ','Clx       ',0,0,ol,olch4+olch4iso,     &
+                                                                0 ,107),       &
 !  22
 chch_t1(22,'Cl2O2     ',1,'TR        ','Clx       ',0,0,s+st+cs,0,0,107),      &
 !  23
@@ -928,7 +939,21 @@ chch_t1(283,'MACO3     ',1,'OO        ','          ',0,0,cs,rp,0,119),         &
 ! 284
 chch_t1(284,'SEC_ORG_I ',1,'TR        ','          ',1,1,st,a,0,132),          &
 ! 285
-chch_t1(285,'JCH4      ',1,'CF        ','          ',0,0,ol,olch4,0,107)       &
+chch_t1(285,'JCH4      ',1,'CF        ','          ',0,0,ol,olch4+olch4iso,    &
+                                                                 0 ,107),      &
+! 286
+chch_t1(286,'SF6       ',1,'TR        ','          ',0,0,ol,olch4+olch4iso,    &
+                                                   0,111),                     &
+! 287
+chch_t1(287,'12CH4     ',1,'TR        ','          ',0,0,ol,olch4iso,0,111),   &
+! 288
+chch_t1(288,'13CH4     ',1,'TR        ','          ',0,0,ol,olch4iso,0,111),   &
+! 289
+chch_t1(289,'14CH4     ',1,'TR        ','          ',0,0,ol,olch4iso,0,111),   &
+! 290
+chch_t1(290,'12CH3D    ',1,'TR        ','          ',0,0,ol,olch4iso,0,111),   &
+! 291
+chch_t1(291,'13CH3D    ',1,'TR        ','          ',0,0,ol,olch4iso,0,111)    &
 ]
 
 
@@ -6270,7 +6295,87 @@ ratb_t1(745,'HO2       ','EtCO3     ','OH        ','EtOO      ','CO2       ',  &
 ! CH4 photolysis for offline oxidants scheme
 ! Reaction rate is read in via prescribed field JCH4
 ratb_t1(746,'CH4       ','JCH4      ','NULL6     ','          ','          ',  &
-'          ',1.0,  0.00,  0.0, 0.00, 0.00, 0.00, 0.00,ol,olch4,0,107)          &
+'          ',1.0,  0.00,  0.0, 0.00, 0.00, 0.00, 0.00,ol,olch4,0,107),         &
+!----------------------------------------------------
+! Methane Isotopologue Chemistry for offline oxidants
+!----------------------------------------------------
+! B101 JPL2011 - olch4 same as st
+ratb_t1(747,'12CH4     ','OH        ','          ','          ','          ',  &
+'          ',XXX,  0.00,  0.0, 0.00, 0.00, 0.00, 0.00,ol,olch4iso,0,111),      &
+! Updates for 121
+ratb_t1(747,'12CH4     ','OH        ','          ','          ','          ',  &
+'          ',XXX,  0.00,  0.0, 0.00, 0.00, 0.00, 0.00,ol,olch4iso,0,121),      &
+! B101 JPL2011 - olch4 same as st
+ratb_t1(101,'O(1D)     ','12CH4     ','          ','          ','          ',  &
+'          ',9.00e-12,  0.00,    0.00, 0.00, 0.00, 0.00, 0.00,ol,olch4iso,0,107), &
+! updates for 121 - olch4 same as st
+ratb_t1(101,'O(1D)     ','12CH4     ','          ','          ','          ',  &
+'          ',8.75e-12,  0.00,    0.00, 0.00, 0.00, 0.00, 0.00,ol,olch4iso,0,121), &
+! B102 JPL2011 - olch4 same as st
+ratb_t1(102,'O(1D)     ','12CH4     ','          ','          ','          ',  &
+'          ',3.45e-11,  0.00,    0.00, 0.00,0.00,0.00,0.00,ol,olch4iso,0,107),    &
+! updates for 121 - olch4 same as st
+ratb_t1(102,'O(1D)     ','12CH4     ','          ','          ','          ',  &
+'          ',3.50e-11,  0.00,    0.00, 0.00,0.00,0.00,0.00,ol,olch4iso,0,121),    &
+! B103 JPL2011 - olch4 same as st
+ratb_t1(103,'O(1D)     ','12CH4     ','          ','          ','          ',  &
+'          ',1.31e-10,  0.00,    0.00, 0.00, 0.00, 0.00, 0.00,ol,olch4iso,0,107), &
+! B016 JPL2011 - olch4 same as st
+ratb_t1(16,'Cl        ','12CH4     ','          ','          ','          ',   &
+'          ',7.30e-12,  0.00, 1280.00, 0.00, 0.00, 0.00, 0.00,ol,olch4iso,0,107), &
+! updates for 121 - do for olch4 same as st
+ratb_t1(16,'Cl        ','12CH4     ','          ','          ','          ',   &
+'          ',7.10e-12,  0.00, 1270.00, 0.00, 0.00, 0.00, 0.00,ol,olch4iso,0,121), &
+
+!----------------------------------------------------
+! Methane Isotopologue Chemistry for offline oxidants 
+!----------------------------------------------------
+! 12CH4 ------------------
+! --- Reaction 747: 12CH4 + OH ---
+ratb_t1(747,'12CH4     ','OH        ','          ','          ','          ', &
+'          ',XXX,       0.00,  0.0,    0.00, 0.00, 0.00, 0.00,ol,olch4iso,    &
+                                                                   0,107),    &
+ratb_t1(747,'12CH4     ','OH        ','          ','          ','          ', &
+'          ',XXX,       0.00,  0.0,    0.00, 0.00, 0.00, 0.00,ol,olch4iso,    &
+                                                                  0 ,121),    &
+! --- Reaction 748: 12CH4 + O(1D) [Combined k_tot over all pathways] ---
+ratb_t1(748,'12CH4     ','O(1D)     ','          ','          ','          ', &
+'          ',XXX, 0.00,  0.00,   0.00, 0.00, 0.00, 0.00,ol,olch4iso,    &
+                                                                  0 ,107),    &
+ratb_t1(748,'12CH4     ','O(1D)     ','          ','          ','          ', &
+'          ',XXX, 0.00,  0.00,   0.00, 0.00, 0.00, 0.00,ol,olch4iso,    &
+                                                                  0 ,121),    &
+! --- Reaction 749: 12CH4 + Cl ---
+ratb_t1(749,'12CH4     ','Cl        ','          ','          ','          ', &
+'          ',XXX,  0.00, 1280.00, 0.00, 0.00, 0.00, 0.00,ol,olch4iso,    &
+                                                                  0 ,107),    &
+ratb_t1(749,'12CH4     ','Cl        ','          ','          ','          ', &
+'          ',XXX,  0.00, 1270.00, 0.00, 0.00, 0.00, 0.00,ol,olch4iso,    &
+                                                                  0 ,121),    &
+! 13CH4 ---------
+! --- Reaction 747: 13CH4 + OH ---
+ratb_t1(747,'13CH4     ','OH        ','          ','          ','          ', &
+'          ',XXX,       0.00,  0.0,    0.00, 0.00, 0.00, 0.00,ol,olch4iso,    &
+                                                                   0,107),    &
+ratb_t1(747,'13CH4     ','OH        ','          ','          ','          ', &
+'          ',XXX,       0.00,  0.0,    0.00, 0.00, 0.00, 0.00,ol,olch4iso,    &
+                                                                  0 ,121),    &
+! --- Reaction 748: 13CH4 + O(1D) [Combined k_tot over all pathways] ---
+ratb_t1(748,'13CH4     ','O(1D)     ','          ','          ','          ', &
+'          ',XXX, 0.00,  0.00,   0.00, 0.00, 0.00, 0.00,ol,olch4iso,    &
+                                                                  0 ,107),    &
+ratb_t1(748,'13CH4     ','O(1D)     ','          ','          ','          ', &
+'          ',XXX, 0.00,  0.00,   0.00, 0.00, 0.00, 0.00,ol,olch4iso,    &
+                                                                  0 ,121),    &
+! --- Reaction 749: 13CH4 + Cl ---
+ratb_t1(749,'13CH4     ','Cl        ','          ','          ','          ', &
+'          ',XXX,  0.00, 1280.00, 0.00, 0.00, 0.00, 0.00,ol,olch4iso,    &
+                                                                  0 ,107),    &
+ratb_t1(749,'13CH4     ','Cl        ','          ','          ','          ', &
+'          ',XXX,  0.00, 1270.00, 0.00, 0.00, 0.00, 0.00,ol,olch4iso,    &
+                                                                  0 ,121),    &
+
+                                                                  
 ]
 
 !----------------------------------------------------------------------
