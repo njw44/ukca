@@ -183,7 +183,8 @@ USE ukca_tropopause,        ONLY:                                              &
 USE ukca_mode_verbose_mod,  ONLY: glob_verbose
 USE ukca_chem_offline,      ONLY: o3_offline_diag, oh_offline_diag,            &
                                   no3_offline_diag, ho2_offline_diag,          &
-                                  cl_offline_diag, o1d_offline_diag
+                                  cl_offline_diag, o1d_offline_diag,           &
+                                  jch4_offline_diag
 USE ukca_offline_oxidants_diags_mod, ONLY: ukca_offline_oxidants_diags,        &
                                            ukca_offline_oxidants_add_diags
 USE ukca_config_defs_mod,   ONLY:                                              &
@@ -2135,9 +2136,12 @@ IF (ukca_config%l_ukca_chem) THEN
           ALLOCATE(cl_offline_diag(theta_field_size,1:model_levels))
         IF (.NOT. ALLOCATED(o1d_offline_diag))                                 &
           ALLOCATE(o1d_offline_diag(theta_field_size,1:model_levels))
+        IF (.NOT. ALLOCATED(jch4_offline_diag))                                &
+          ALLOCATE(jch4_offline_diag(theta_field_size,1:model_levels))
         ! Initialise to zero
         cl_offline_diag(:,:) = 0.0
         o1d_offline_diag(:,:) = 0.0
+        jch4_offline_diag(:,:) = 0.0
       END IF
     END IF
 
@@ -2490,9 +2494,11 @@ IF (ukca_config%l_ukca_chem) THEN
         CALL ukca_offline_oxidants_add_diags(row_length, rows, model_levels,   &
                                        totnodens,                              &
                                        cl_offline_diag, o1d_offline_diag,      &
+                                       jch4_offline_diag,                      &
                                        SIZE(stashwork50), stashwork50)
         DEALLOCATE(cl_offline_diag)
         DEALLOCATE(o1d_offline_diag)
+        DEALLOCATE(jch4_offline_diag)
       END IF
     END IF
 

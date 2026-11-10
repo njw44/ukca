@@ -178,6 +178,7 @@ USE ukca_fieldname_mod,  ONLY: maxlen_fieldname,                               &
   fldname_o3_offline,                                                          &
   fldname_oh_offline,                                                          &
   fldname_cl_offline,                                                          &
+  fldname_jch4_offline,                                                        &
   fldname_o1d_offline,                                                         &
   fldname_dust_div1,                                                           &
   fldname_dust_div2,                                                           &
@@ -1258,6 +1259,9 @@ IF (ukca_config%l_ukca_offline .OR. ukca_config%l_ukca_offline_be) THEN
       CASE ('O(1D)    ')
         n = n + 1
         IF (n <= n_max) fld_names(n) = fldname_o1d_offline
+      CASE ('JCH4     ')
+        n = n + 1
+        IF (n <= n_max) fld_names(n) = fldname_jch4_offline
       CASE DEFAULT
         ! Do nothing
       END SELECT

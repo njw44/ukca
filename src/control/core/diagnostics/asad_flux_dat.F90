@@ -1053,7 +1053,7 @@ TYPE(asad_flux_defn), PARAMETER :: asad_atmos_ch4_budget_loss(6)               &
 
 ! Whole atmosphere CH4 rxn-flux diagnostics for offline oxidant scheme
 ! Include photolysis later
-TYPE(asad_flux_defn), PARAMETER :: asad_atmos_ch4_budget_offline_loss(5)       &
+TYPE(asad_flux_defn), PARAMETER :: asad_atmos_ch4_budget_offline_loss(6)       &
   ! Whole atmosphere CH4+OH rxn-flux
        = [ asad_flux_defn('RXN',50428,'B',.FALSE.,0,3,                         &
        ['OH        ','CH4       '],                                            &
@@ -1071,12 +1071,12 @@ TYPE(asad_flux_defn), PARAMETER :: asad_atmos_ch4_budget_offline_loss(5)       &
   ! Whole atmosphere CH4+Cl rxn-flux
        asad_flux_defn('RXN',50430,'B',.FALSE.,0,3,                             &
        ['Cl        ','CH4       '],                                            &
-       ['NULL3     ','          ','          ','          '])                  &
-  ! ! Whole atmosphere CH4+hv rxn-flux
-  !      asad_flux_defn('RXN',50431,'J',.FALSE.,0,4,                             &
-  !      ['CH4       ','PHOTON    '],                                            &
-  !      ['MeOO      ','H         ','          ','          '])                  &
-        ]
+       ['NULL3     ','          ','          ','          ']),                 &
+  ! Whole atmosphere CH4+hv rxn-flux
+       asad_flux_defn('RXN',50431,'B',.FALSE.,0,3,                             &
+       ['CH4       ','JCH4      '],                                            &
+       ['NULL6     ','          ','          ','          '])                  &
+       ]
 
 ! Methane dry deposition (3D) written into s50i439
 ! Dry deposition:

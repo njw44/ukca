@@ -171,7 +171,7 @@ IF (lhook) CALL dr_hook(ModuleName//':'//RoutineName, zhook_out, zhook_handle)
 END SUBROUTINE ukca_offline_oxidants_diags
 
 SUBROUTINE ukca_offline_oxidants_add_diags(row_length, rows, model_levels,     &
-  totnodens, cl_offline_diag, o1d_offline_diag,                                &
+  totnodens, cl_offline_diag, o1d_offline_diag, jch4_offline_diag,             &
   len_stashwork,STASHwork50)
 ! ---------------------------------------------------------------------
 ! Description:
@@ -198,8 +198,9 @@ INTEGER, INTENT(IN) :: len_stashwork      ! Length of stashwork array
 REAL, INTENT(IN)    :: totnodens(row_length,rows,model_levels)
 ! Diagnostic fields (mass mixing ratio)
 
-REAL, INTENT(IN) :: cl_offline_diag(row_length*rows,model_levels)  ! Cl diag
-REAL, INTENT(IN) :: o1d_offline_diag(row_length*rows,model_levels) ! O(1D) diag
+REAL, INTENT(IN) :: cl_offline_diag(row_length*rows,model_levels)   ! Cl diag
+REAL, INTENT(IN) :: o1d_offline_diag(row_length*rows,model_levels)  ! O(1D) diag
+REAL, INTENT(IN) :: jch4_offline_diag(row_length*rows,model_levels) ! JCH4 diag
 
 REAL, INTENT(IN OUT) :: STASHwork50(len_stashwork)  ! Work array
 
@@ -224,7 +225,7 @@ im_index = 1
 
 section = ukca_diag_sect
 
-DO item = 260,261
+DO item = 260,262
   IF (sf(item,section) .AND. item == 260) THEN
     DO k=1,model_levels
       field3d(:,:,k) = RESHAPE(cl_offline_diag(:,k),[row_length,rows])*        &
@@ -241,6 +242,18 @@ DO item = 260,261
     DO k=1,model_levels
       field3d(:,:,k) = RESHAPE(o1d_offline_diag(:,k),[row_length,rows])*       &
         c_o1d/(totnodens(:,:,k)/1.0e6)
+    END DO
+
+    CALL copydiag_3d (stashwork50(si(item,section,im_index):                   &
+         si_last(item,section,im_index)),                                      &
+      field3d,                                                                 &
+      row_length,rows,model_levels,                                            &
+      stlist(:,stindex(1,item,section,im_index)),len_stlist,                   &
+      stash_levels,num_stash_levels+1)
+  ELSE IF (sf(item,section) .AND. item == 262) THEN
+    DO k=1,model_levels
+      ! No unit conversion for photolysis rate
+      field3d(:,:,k) = RESHAPE(jch4_offline_diag(:,k),[row_length,rows])
     END DO
 
     CALL copydiag_3d (stashwork50(si(item,section,im_index):                   &

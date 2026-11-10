@@ -411,6 +411,8 @@ REAL, ALLOCATABLE, TARGET, SAVE, PUBLIC :: cl_offline(:,:,:)
   ! Atomic chlorine as offline oxidant (kg/kg-air)
 REAL, ALLOCATABLE, TARGET, SAVE, PUBLIC :: o1d_offline(:,:,:)
   ! Singlet oxygen as offline oxidant (kg/kg-air)
+REAL, ALLOCATABLE, TARGET, SAVE, PUBLIC :: jch4_offline(:,:,:)
+  ! Photolysis rate of methane as offline field (s-1)
 
 ! --- 4D fields of type real ---
 REAL, ALLOCATABLE, TARGET, SAVE, PUBLIC :: photol_rates(:,:,:,:)

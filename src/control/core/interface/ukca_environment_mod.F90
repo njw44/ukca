@@ -168,6 +168,7 @@ USE ukca_fieldname_mod,  ONLY:                                                 &
   fldname_oh_offline,                                                          &
   fldname_cl_offline,                                                          &
   fldname_o1d_offline,                                                         &
+  fldname_jch4_offline,                                                        &
   fldname_dust_div1,                                                           &
   fldname_dust_div2,                                                           &
   fldname_dust_div3,                                                           &
@@ -330,7 +331,8 @@ USE ukca_environment_fields_mod, ONLY:                                         &
   o3_offline,                                                                  &
   oh_offline,                                                                  &
   cl_offline,                                                                  &
-  o1d_offline,                                                                  &
+  o1d_offline,                                                                 &
+  jch4_offline,                                                                &
   dust_div1,                                                                   &
   dust_div2,                                                                   &
   dust_div3,                                                                   &
@@ -740,7 +742,7 @@ INTEGER, OPTIONAL, INTENT(OUT) :: field_index
 
 ! List of 3-D fields that can be populated from 1D real data arrays
 ! Have to use DATA statement as names are not of uniform length
-CHARACTER(LEN=maxlen_fieldname) :: fldnames_3d_real(64)
+CHARACTER(LEN=maxlen_fieldname) :: fldnames_3d_real(65)
 
 DATA fldnames_3d_real / fldname_stcon, fldname_theta, fldname_q, fldname_qcf,  &
   fldname_conv_cloud_amount, fldname_rho_r2, fldname_qcl,                      &
@@ -759,6 +761,7 @@ DATA fldnames_3d_real / fldname_stcon, fldname_theta, fldname_q, fldname_qcf,  &
   fldname_bl_tke, fldname_interf_z, fldname_h2o2_offline,                      &
   fldname_ho2_offline, fldname_no3_offline, fldname_o3_offline,                &
   fldname_oh_offline, fldname_cl_offline, fldname_o1d_offline,                 &
+  fldname_jch4_offline,                                                        &
   fldname_grid_area_fullht, fldname_grid_volume,                               &
   fldname_grid_airmass, fldname_rel_humid_frac, fldname_rel_humid_frac_clr,    &
   fldname_qsvp /
@@ -1676,6 +1679,9 @@ CASE (fldname_cl_offline)
 CASE (fldname_o1d_offline)
   CALL set_field_3d_real(i_field, i1, i2, j1, j2, k1, k2, field_data,          &
                          o1d_offline)
+CASE (fldname_jch4_offline)
+  CALL set_field_3d_real(i_field, i1, i2, j1, j2, k1, k2, field_data,          &
+                         jch4_offline)
 CASE (fldname_grid_area_fullht)
   CALL set_field_3d_real(i_field, i1, i2, j1, j2, k1, k2, field_data,          &
                          grid_area_fullht)
@@ -2228,6 +2234,7 @@ IF (ALLOCATED(o3_offline)) DEALLOCATE(o3_offline)
 IF (ALLOCATED(oh_offline)) DEALLOCATE(oh_offline)
 IF (ALLOCATED(cl_offline)) DEALLOCATE(cl_offline)
 IF (ALLOCATED(o1d_offline)) DEALLOCATE(o1d_offline)
+IF (ALLOCATED(jch4_offline)) DEALLOCATE(jch4_offline)
 IF (ALLOCATED(interf_z)) DEALLOCATE(interf_z)
 IF (ALLOCATED(grid_surf_area)) DEALLOCATE(grid_surf_area)
 IF (ALLOCATED(ext_cg_flash)) DEALLOCATE(ext_cg_flash)

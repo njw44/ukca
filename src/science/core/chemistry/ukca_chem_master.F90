@@ -104,11 +104,11 @@ INTEGER, PARAMETER :: rm = 1024   ! Used to remove reactions that existed at
 INTEGER, PARAMETER :: olch4 = 2048 ! Include methane loss on offline oxidants scheme
 
 ! Define size of master chemistry
-INTEGER, PARAMETER :: n_chch_master = 360 ! number of known species
+INTEGER, PARAMETER :: n_chch_master = 361 ! number of known species
 INTEGER, PARAMETER :: n_het_master  =  18 ! number of heterogeneous reactions
 INTEGER, PARAMETER :: n_dry_master  = 163 ! number of dry deposition reactions
 INTEGER, PARAMETER :: n_wet_master  = 160 ! number of wet deposition reactions
-INTEGER, PARAMETER :: n_bimol_master = 1220 ! number of bimolecular reactions
+INTEGER, PARAMETER :: n_bimol_master = 1221 ! number of bimolecular reactions
 INTEGER, PARAMETER :: n_ratj_master = 183 ! number of photolysis reactions
 INTEGER, PARAMETER :: n_ratt_master = 116 ! number of termolecular reactions
 
@@ -926,7 +926,9 @@ chch_t1(282,'RU10NO3   ',1,'TR        ','          ',1,1,cs,0,0,119),          &
 ! 283
 chch_t1(283,'MACO3     ',1,'OO        ','          ',0,0,cs,rp,0,119),         &
 ! 284
-chch_t1(284,'SEC_ORG_I ',1,'TR        ','          ',1,1,st,a,0,132)           &
+chch_t1(284,'SEC_ORG_I ',1,'TR        ','          ',1,1,st,a,0,132),          &
+! 285
+chch_t1(285,'JCH4      ',1,'CF        ','          ',0,0,ol,olch4,0,107)       &
 ]
 
 
@@ -6264,7 +6266,11 @@ ratb_t1(744,'O3        ','C5H8      ','OH        ','          ','          ',  &
 '          ',3.93e-15,  0.00, 1913.00, 0.54, 0.00, 0.00, 0.00,r,0,0,107),      &
 ! B745 - updates for 121
 ratb_t1(745,'HO2       ','EtCO3     ','OH        ','EtOO      ','CO2       ',  &
-'          ',1.89e-13,  0.00,  -1040.00, 0.00, 0.00, 0.00, 0.00,st,0,0,121)    &
+'          ',1.89e-13,  0.00,  -1040.00, 0.00, 0.00, 0.00, 0.00,st,0,0,121),   &
+! CH4 photolysis for offline oxidants scheme
+! Reaction rate is read in via prescribed field JCH4
+ratb_t1(746,'CH4       ','JCH4      ','NULL6     ','          ','          ',  &
+'          ',1.0,  0.00,  0.0, 0.00, 0.00, 0.00, 0.00,ol,olch4,0,107)          &
 ]
 
 !----------------------------------------------------------------------
