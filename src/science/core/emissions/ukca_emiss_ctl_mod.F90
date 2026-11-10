@@ -1226,7 +1226,9 @@ IF (ukca_config%l_enable_diag_um) THEN
         sf(304,section) .OR. sf(305,section) .OR. sf(306,section) .OR.         &
         sf(307,section) .OR. sf(308,section) .OR. sf(309,section) .OR.         &
         sf(310,section) .OR. sf(311,section) .OR. sf(312,section) .OR.         &
-        sf(313,section) .OR. sf(314,section) ) THEN
+        sf(313,section) .OR. sf(314,section) .OR. sf(315,section) .OR.         &
+        sf(316,section) .OR. sf(317,section) .OR. sf(318,section) .OR.         &
+        sf(319,section) .OR. sf(320,section)) THEN
 
       CALL ukca_emiss_diags (row_length, rows, model_levels,                   &
                              len_stashwork50, stashwork50)

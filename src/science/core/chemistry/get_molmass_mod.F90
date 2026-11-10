@@ -50,7 +50,8 @@ USE ukca_constants,  ONLY: m_br, m_brcl, m_bro, m_brono2, m_c, m_c2h4,         &
                            m_nh3, m_no, m_no2, m_oclo, m_ocs, m_oxylene,       &
                            m_so2, m_so4, m_toluene, m_c2h2, m_tbut2ene,        &
                            m_benzene, m_etoh, m_etcho, m_mek, m_hcooh,         &
-                           m_meco2h, m_hoch2cho, m_mp
+                           m_meco2h, m_hoch2cho, m_mp, m_c12h4, m_c13h4,       &
+                           m_c14h4, m_c12h3d, m_c13h3d, m_sf6
 
 USE ereport_mod,     ONLY: ereport
 USE parkind1,        ONLY: jpim,  jprb     ! DrHook
@@ -283,6 +284,26 @@ CASE ('MeCO2H    ')
 CASE ('HOCH2CHO  ')
   get_molmass = m_hoch2cho
 
+  ! ----------------------------------------
+  ! CH4 isotopologue species
+CASE ('C12H4     ')  
+   get_molmass = m_c12h4
+   
+CASE ('C13H4     ')
+   get_molmass = m_c13h4
+   
+CASE ('C14H4     ')
+   get_molmass = m_c14h4
+   
+CASE ('C12H3D    ')
+   get_molmass = m_c12h3d
+   
+CASE ('C13H3D    ')
+   get_molmass = m_c13h3d
+   
+CASE ('SF6       ')
+   get_molmass = m_sf6   
+  
   ! -----------------------------------------
   !   Others (report warning)
 CASE ('AGE       ')

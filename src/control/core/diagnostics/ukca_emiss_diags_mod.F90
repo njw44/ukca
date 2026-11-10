@@ -495,6 +495,60 @@ IF (sf(item, section)) THEN
                  emdiags%em_mek (:,:), row_length, rows)
 END IF
 
+!---------------------------------------------------------------------
+! Sec 50, item 315: C12H4 surface emissions
+item = get_emdiag_stash ('C12H4     ')
+IF (sf(item, section)) THEN
+  CALL copydiag (stashwork (si(item,section,im_index):                         &
+                 si_last(item,section,im_index)),                              &
+                 emdiags%em_c12h4 (:,:), row_length, rows)
+END IF
+
+!---------------------------------------------------------------------
+! Sec 50, item 316: C13H4 surface emissions
+item = get_emdiag_stash ('C13H4     ')
+IF (sf(item, section)) THEN
+  CALL copydiag (stashwork (si(item,section,im_index):                         &
+                 si_last(item,section,im_index)),                              &
+                 emdiags%em_c13h4 (:,:), row_length, rows)
+END IF
+
+!---------------------------------------------------------------------
+! Sec 50, item 317: C14H4 surface emissions
+item = get_emdiag_stash ('C14H4     ')
+IF (sf(item, section)) THEN
+  CALL copydiag (stashwork (si(item,section,im_index):                         &
+                 si_last(item,section,im_index)),                              &
+                 emdiags%em_c14h4 (:,:), row_length, rows)
+END IF
+
+!---------------------------------------------------------------------
+! Sec 50, item 318: C12H3D surface emissions
+item = get_emdiag_stash ('C12H3D    ')
+IF (sf(item, section)) THEN
+  CALL copydiag (stashwork (si(item,section,im_index):                         &
+                 si_last(item,section,im_index)),                              &
+                 emdiags%em_c12h3d (:,:), row_length, rows)
+END IF
+
+!---------------------------------------------------------------------
+! Sec 50, item 319: C13H3D surface emissions
+item = get_emdiag_stash ('C13H3D    ')
+IF (sf(item, section)) THEN
+  CALL copydiag (stashwork (si(item,section,im_index):                         &
+                 si_last(item,section,im_index)),                              &
+                 emdiags%em_c13h3d (:,:), row_length, rows)
+END IF
+
+!---------------------------------------------------------------------
+! Sec 50, item 320: SF6 surface emissions
+item = get_emdiag_stash ('SF6       ')
+IF (sf(item, section)) THEN
+  CALL copydiag (stashwork (si(item,section,im_index):                         &
+                 si_last(item,section,im_index)),                              &
+                 emdiags%em_sf6 (:,:), row_length, rows)
+END IF
+
 IF (lhook) CALL dr_hook(ModuleName//':'//RoutineName,zhook_out,zhook_handle)
 
 RETURN

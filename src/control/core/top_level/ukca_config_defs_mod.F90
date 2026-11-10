@@ -427,9 +427,9 @@ ELSE IF (ukca_config%l_ukca_offline) THEN
 
   IF (ukca_config%l_ukca_offline_ch4iso) THEN
      ! methane isotopologues
-     n_chem_tracers = 6
-     n_chem_emissions = n_chem_emissions + 6
-     nr_therm = 42 !(11 base + 31 isotopologie reactions)
+     n_chem_tracers = 7
+     n_chem_emissions = n_chem_emissions + 7
+     nr_therm = 48 !(11 base + 6 CH4 + 31 isotopologue reactions)
   ELSE IF (ukca_config%l_ukca_offline_ch4) THEN
     n_chem_tracers = 1
     n_chem_emissions = n_chem_emissions + 1
@@ -451,10 +451,10 @@ ELSE IF (ukca_config%l_ukca_offline) THEN
 
   ! Table refers to emissions, more species may be emitted using surrogates
   IF (ukca_config%l_ukca_offline_ch4iso) THEN
-      em_chem_spec(1:17) =                                                   &
-      ['12CH4     ','13CH4     ','12CH3D    ','13CH3D    ','14CH4     ',     &
-       'SF6       ','BC_fossil ','BC_biofuel','OM_fossil ','OM_biofuel',     &
-       'Monoterp  ','SO2_low   ','SO2_high  ','DMS       ',                  &
+      em_chem_spec(1:18) =                                                   &
+      ['CH4       ','C12H4     ','C13H4     ','C14CH4    ','C12H3D    ',     &
+       'C13H3D    ','SF6       ','BC_fossil ','BC_biofuel','OM_fossil ',     &
+       'OM_biofuel','Monoterp  ','SO2_low   ','SO2_high  ','DMS       ',     &
        'SO2_nat   ','BC_biomass','OM_biomass']
 
       ! adding microplastics to em_chem_spec

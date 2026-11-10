@@ -65,6 +65,13 @@ TYPE :: emdiags_struct
   LOGICAL :: l_em_etcho
   LOGICAL :: l_em_hoch2cho
   LOGICAL :: l_em_mek
+  ! Logicals for methane isotopologues
+  LOGICAL :: l_em_c12h4
+  LOGICAL :: l_em_c13h4
+  LOGICAL :: l_em_c14h4
+  LOGICAL :: l_em_c12h3d
+  LOGICAL :: l_em_c13h3d
+  LOGICAL :: l_em_sf6
 
 
   ! Pointers to hold emission diagnostics
@@ -104,6 +111,13 @@ TYPE :: emdiags_struct
   REAL, POINTER :: em_etcho   (:,:)
   REAL, POINTER :: em_hoch2cho(:,:)
   REAL, POINTER :: em_mek     (:,:)
+  ! Pointers for methane isotopologues
+  REAL, POINTER :: em_c12h4   (:,:)
+  REAL, POINTER :: em_c13h4   (:,:)
+  REAL, POINTER :: em_c14h4   (:,:)
+  REAL, POINTER :: em_c12h3d  (:,:)
+  REAL, POINTER :: em_c13h3d  (:,:)
+  REAL, POINTER :: em_sf6     (:,:)
 
 END TYPE emdiags_struct
 

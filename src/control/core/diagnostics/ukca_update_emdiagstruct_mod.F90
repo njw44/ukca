@@ -121,6 +121,13 @@ IF (l_first) THEN
   emdiags%l_em_etcho   = .FALSE.
   emdiags%l_em_hoch2cho= .FALSE.
   emdiags%l_em_mek     = .FALSE.
+  ! Methane isotopologues
+  emdiags%l_em_c12h4   = .FALSE.
+  emdiags%l_em_c13h4   = .FALSE.
+  emdiags%l_em_c14h4   = .FALSE.
+  emdiags%l_em_c12h3d  = .FALSE.
+  emdiags%l_em_c13h3d  = .FALSE.
+  emdiags%l_em_sf6     = .FALSE.
 
   l_first             = .FALSE.
 END IF
@@ -535,7 +542,73 @@ CASE ('MEK        ')
     END IF
   END IF
 
+CASE ('C12H4      ')
+  IF (emdiags%l_em_c12h4) THEN
+    emdiags%em_c12h4   (:,:)    = em_diags (:,:,1)
+  ELSE
+    IF (sf(item,section)) THEN
+      ALLOCATE (emdiags%em_c12h4 (row_length, rows))
+      emdiags%em_c12h4   (:,:)  = em_diags (:,:,1)
+      emdiags%l_em_c12h4        = .TRUE.
+    END IF
+  END IF
 
+CASE ('C13H4      ')
+  IF (emdiags%l_em_c13h4) THEN
+    emdiags%em_c13h4   (:,:)    = em_diags (:,:,1)
+  ELSE
+    IF (sf(item,section)) THEN
+      ALLOCATE (emdiags%em_c13h4 (row_length, rows))
+      emdiags%em_c13h4   (:,:)  = em_diags (:,:,1)
+      emdiags%l_em_c13h4        = .TRUE.
+    END IF
+ END IF
+ 
+CASE ('C14H4      ')
+  IF (emdiags%l_em_c14h4) THEN
+    emdiags%em_c14h4   (:,:)    = em_diags (:,:,1)
+  ELSE
+    IF (sf(item,section)) THEN
+      ALLOCATE (emdiags%em_c14h4 (row_length, rows))
+      emdiags%em_c14h4   (:,:)  = em_diags (:,:,1)
+      emdiags%l_em_c14h4        = .TRUE.
+    END IF
+  END IF 
+
+CASE ('C12H3D     ')
+  IF (emdiags%l_em_c12h3d) THEN
+    emdiags%em_c12h3d   (:,:)   = em_diags (:,:,1)
+  ELSE
+    IF (sf(item,section)) THEN
+      ALLOCATE (emdiags%em_c12h3d (row_length, rows))
+      emdiags%em_c12h3d   (:,:) = em_diags (:,:,1)
+      emdiags%l_em_c12h3d       = .TRUE.
+    END IF
+  END IF
+
+CASE ('C13H3D     ')
+  IF (emdiags%l_em_c13h3d) THEN
+    emdiags%em_c13h3d   (:,:)   = em_diags (:,:,1)
+  ELSE
+    IF (sf(item,section)) THEN
+      ALLOCATE (emdiags%em_c13h3d (row_length, rows))
+      emdiags%em_c13h3d   (:,:) = em_diags (:,:,1)
+      emdiags%l_em_c13h3d       = .TRUE.
+    END IF
+  END IF
+
+CASE ('SF6        ')
+  IF (emdiags%l_em_sf6) THEN
+    emdiags%em_sf6   (:,:)      = em_diags (:,:,1)
+  ELSE
+    IF (sf(item,section)) THEN
+      ALLOCATE (emdiags%em_sf6 (row_length, rows))
+      emdiags%em_sf6   (:,:)    = em_diags (:,:,1)
+      emdiags%l_em_sf6          = .TRUE.
+    END IF
+  END IF
+
+  
 CASE DEFAULT
     ! Report error unless this is an aerosol emission (BC_fossil:, etc)
   IF (.NOT. ANY(aero_ems_species == diag_name))  ierr = 1
