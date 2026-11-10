@@ -126,6 +126,7 @@ USE yomhook,              ONLY: lhook, dr_hook  ! DrHook
 
 USE ukca_diurnal_isop_ems_mod, ONLY: ukca_diurnal_isop_ems
 USE ukca_light_ctl_mod, ONLY: ukca_light_ctl
+USE ukca_cosmogenic_14CO_mod, ONLY: ukca_cosmogenic_14CO_ctl, ukca_cosmogenic_14CO_init
 USE ukca_dms_flux_mod, ONLY: ukca_dms_flux
 
 USE ukca_prim_ss_mod, ONLY: ukca_prim_ss
@@ -318,6 +319,8 @@ INTEGER :: ils_mask (row_length, rows)  ! Land/sea mask (1/0) used
 REAL :: lightningem_n_gridbox  (1:row_length, 1:rows, 1:model_levels)
 REAL :: lightningem_no2_to_air (1:row_length, 1:rows, 1:model_levels)
 
+REAL :: emiss_cosmogenic14CO  (1:row_length, 1:rows, 1:model_levels)
+
 !  Molar mass of dry air (kg/mol) =avogadro*boltzmann/rgas
 REAL    :: mm_da
 
@@ -437,7 +440,9 @@ IF ( l_first ) THEN
       emissions(l)%vert_scaling_3d (:,:,:) = vert_fact_3d (:,:,:)
     END IF
   END DO
-
+  IF (ukca_config%l_ukca_offline_ch4iso) THEN
+    CALL ukca_cosmogenic_14CO_init()
+  END IF
 ELSE
 
   ! If persistence is off then spatial arrays in the emissions
@@ -596,6 +601,13 @@ IF (ukca_config%i_ukca_light_param /= i_light_param_off) THEN
                        emissions(inox_light)%values (:,:,ilev)/ surf_area (:,:)
   END DO
 
+END IF
+
+
+! Cosmogenic 14CO production
+IF (ukca_config%l_ukca_offline_ch4iso) THEN
+   CALL ukca_cosmogenic_14CO_ctl (rows, row_length, model_levels, iyear, imonth, &
+        latitude, longitude, p_theta_levels, emiss_cosmogenic14CO)
 END IF
 
 ! Set wetland methane emissions to zero over non-land surfaces
