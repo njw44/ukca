@@ -184,7 +184,7 @@ USE ukca_constants,  ONLY: c_br, c_brcl, c_bro, c_brono2, c_buoo,              &
     c_txcarb22, c_ru12pan, c_rtn26pan, c_aroh14, c_aroh17, c_arnoh14,          &
     c_arnoh17, c_anhy, c_cri,c_dhpcarb9, c_hpucarb12, c_hucarb9, c_iepox,      &
     c_hmml, c_dhpr12ooh, c_dhcarb9, c_ru12no3, c_ru10no3, c_dhpr12o2,          &
-    c_ru10ao2, c_maco3, c_12ch4, c_13ch4, c_12ch3d, c_13ch3d, 14ch4, sf6
+    c_ru10ao2, c_maco3, c_12ch4, c_13ch4, c_12ch3d, c_13ch3d, c_14ch4, c_sf6
 
 
 USE asad_mod,        ONLY: advt, nadvt, speci, jpctr, jpspec

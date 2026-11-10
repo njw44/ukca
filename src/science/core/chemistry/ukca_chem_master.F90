@@ -942,18 +942,17 @@ chch_t1(284,'SEC_ORG_I ',1,'TR        ','          ',1,1,st,a,0,132),          &
 chch_t1(285,'JCH4      ',1,'CF        ','          ',0,0,ol,olch4+olch4iso,    &
                                                                  0 ,107),      &
 ! 286
-chch_t1(286,'SF6       ',1,'TR        ','          ',0,0,ol,olch4+olch4iso,    &
-                                                   0,111),                     &
+chch_t1(286,'SF6       ',1,'TR        ','          ',0,0,ol,olch4iso,0,107),   &
 ! 287
-chch_t1(287,'12CH4     ',1,'TR        ','          ',0,0,ol,olch4iso,0,111),   &
+chch_t1(287,'12CH4     ',1,'TR        ','          ',0,0,ol,olch4iso,0,107),   &
 ! 288
-chch_t1(288,'13CH4     ',1,'TR        ','          ',0,0,ol,olch4iso,0,111),   &
+chch_t1(288,'13CH4     ',1,'TR        ','          ',0,0,ol,olch4iso,0,107),   &
 ! 289
-chch_t1(289,'14CH4     ',1,'TR        ','          ',0,0,ol,olch4iso,0,111),   &
+chch_t1(289,'14CH4     ',1,'TR        ','          ',0,0,ol,olch4iso,0,107),   &
 ! 290
-chch_t1(290,'12CH3D    ',1,'TR        ','          ',0,0,ol,olch4iso,0,111),   &
+chch_t1(290,'12CH3D    ',1,'TR        ','          ',0,0,ol,olch4iso,0,107),   &
 ! 291
-chch_t1(291,'13CH3D    ',1,'TR        ','          ',0,0,ol,olch4iso,0,111)    &
+chch_t1(291,'13CH3D    ',1,'TR        ','          ',0,0,ol,olch4iso,0,107)    &
 ]
 
 
