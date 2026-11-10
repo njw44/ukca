@@ -8554,6 +8554,7 @@ IF (ukca_config%i_ukca_chem_version >= 121) qualifier = qualifier + rm
 
 ! Qualifier for adding methane loss in offline oxidant scheme
 IF (ukca_config%l_ukca_offline_ch4) qualifier = qualifier + olch4
+IF (ukca_config%l_ukca_offline_ch4iso) qualifier = qualifier + olch4iso
 
 WRITE (umMessage,'(A,1X,I9)') 'UKCA_CHEM_MASTER: qualifier = ',qualifier
 CALL umPrint(umMessage,src=RoutineName)

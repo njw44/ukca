@@ -2130,7 +2130,8 @@ IF (ukca_config%l_ukca_chem) THEN
       oh_offline_diag(:,:) = 0.0
       no3_offline_diag(:,:) = 0.0
       ho2_offline_diag(:,:) = 0.0
-      IF (ukca_config%l_ukca_offline_ch4) THEN
+      IF (ukca_config%l_ukca_offline_ch4 .OR.                                  &
+         ukca_config%l_ukca_offline_ch4iso) THEN
         ! Allocate diagnostic arrays for offline Cl and O(1D)   
         IF (.NOT. ALLOCATED(cl_offline_diag))                                  &
           ALLOCATE(cl_offline_diag(theta_field_size,1:model_levels))
@@ -2490,7 +2491,8 @@ IF (ukca_config%l_ukca_chem) THEN
       DEALLOCATE(no3_offline_diag)
       DEALLOCATE(ho2_offline_diag)
 
-      IF (ukca_config%l_ukca_offline_ch4) THEN
+      IF (ukca_config%l_ukca_offline_ch4 .OR.                                  &
+         ukca_config%l_ukca_offline_ch4iso ) THEN
         CALL ukca_offline_oxidants_add_diags(row_length, rows, model_levels,   &
                                        totnodens,                              &
                                        cl_offline_diag, o1d_offline_diag,      &
