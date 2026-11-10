@@ -184,7 +184,7 @@ USE ukca_constants,  ONLY: c_br, c_brcl, c_bro, c_brono2, c_buoo,              &
     c_txcarb22, c_ru12pan, c_rtn26pan, c_aroh14, c_aroh17, c_arnoh14,          &
     c_arnoh17, c_anhy, c_cri,c_dhpcarb9, c_hpucarb12, c_hucarb9, c_iepox,      &
     c_hmml, c_dhpr12ooh, c_dhcarb9, c_ru12no3, c_ru10no3, c_dhpr12o2,          &
-    c_ru10ao2, c_maco3, c_12ch4, c_13ch4, c_12ch3d, c_13ch3d, c_14ch4, c_sf6
+    c_ru10ao2, c_maco3, c_c12h4, c_c13h4, c_c12h3d, c_c13h3d, c_c14h4, c_sf6
 
 
 USE asad_mod,        ONLY: advt, nadvt, speci, jpctr, jpspec
@@ -459,11 +459,11 @@ WHERE (advt == 'DHCARB9   ') c_species = c_dhcarb9
 WHERE (advt == 'RU12NO3   ') c_species = c_ru12no3
 WHERE (advt == 'RU10NO3   ') c_species = c_ru10no3
 ! Methane isotopologue tracers
-WHERE (advt == '12CH4     ') c_species = c_12ch4
-WHERE (advt == '13CH4     ') c_species = c_13ch4
-WHERE (advt == '12CH3D    ') c_species = c_12ch3d
-WHERE (advt == '13CH3D    ') c_species = c_13ch3d
-WHERE (advt == '14CH4     ') c_species = c_14ch4
+WHERE (advt == 'C12H4     ') c_species = c_c12h4
+WHERE (advt == 'C13H4     ') c_species = c_c13h4
+WHERE (advt == 'C12H3D    ') c_species = c_c12h3d
+WHERE (advt == 'C13H3D    ') c_species = c_c13h3d
+WHERE (advt == 'C14H4     ') c_species = c_c14h4
 WHERE (advt == 'SF6       ') c_species = c_sf6
 
 ! Mass for these species does not matter as not emitted or deposited

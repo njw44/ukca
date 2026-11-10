@@ -452,7 +452,7 @@ ELSE IF (ukca_config%l_ukca_offline) THEN
   ! Table refers to emissions, more species may be emitted using surrogates
   IF (ukca_config%l_ukca_offline_ch4iso) THEN
       em_chem_spec(1:18) =                                                   &
-      ['CH4       ','C12H4     ','C13H4     ','C14CH4    ','C12H3D    ',     &
+      ['CH4       ','C12H4     ','C13H4     ','C14H4     ','C12H3D    ',     &
        'C13H3D    ','SF6       ','BC_fossil ','BC_biofuel','OM_fossil ',     &
        'OM_biofuel','Monoterp  ','SO2_low   ','SO2_high  ','DMS       ',     &
        'SO2_nat   ','BC_biomass','OM_biomass']

@@ -107,7 +107,7 @@ INTEGER, PARAMETER :: olch4iso = 4096 ! Include methane isotopologues in offline
 ! Define size of master chemistry
 INTEGER, PARAMETER :: n_chch_master = 367 ! number of known species
 INTEGER, PARAMETER :: n_het_master  =  18 ! number of heterogeneous reactions
-INTEGER, PARAMETER :: n_dry_master  = 163 ! number of dry deposition reactions
+INTEGER, PARAMETER :: n_dry_master  = 168 ! number of dry deposition reactions
 INTEGER, PARAMETER :: n_wet_master  = 160 ! number of wet deposition reactions
 INTEGER, PARAMETER :: n_bimol_master = 1267 ! number of bimolecular reactions
 INTEGER, PARAMETER :: n_ratj_master = 183 ! number of photolysis reactions
@@ -245,7 +245,7 @@ chch_t1(12,'CH4       ',1,'TR        ','          ',0,0,s+cs,ce,0,107),        &
 chch_t1(12,'CH4       ',1,'TR        ','          ',1,0,ti+t+st+r,ce,0,107),   &
 ! Dry deposition of CH4 enabled in offline oxidants scheme with methane loss.
 chch_t1(12,'CH4       ',1,'TR        ','          ',1,0,ol,olch4+olch4iso,     &
-                                                                0 ,107),       
+                                                                0 ,107),       &      
 !  13 DD: 10,
 chch_t1(13,'CO        ',1,'TR        ','          ',1,0,ti+s+t+st+r+cs,        &
                                                                 0,0,107),      &
@@ -937,15 +937,15 @@ chch_t1(285,'JCH4      ',1,'CF        ','          ',0,0,ol,olch4+olch4iso,    &
 ! 286
 chch_t1(286,'SF6       ',1,'TR        ','          ',0,0,ol,olch4iso,0,107),   &
 ! 287
-chch_t1(287,'C12H4     ',1,'TR        ','          ',0,0,ol,olch4iso,0,107),   &
+chch_t1(287,'C12H4     ',1,'TR        ','          ',1,0,ol,olch4iso,0,107),   &
 ! 288
-chch_t1(288,'C13H4     ',1,'TR        ','          ',0,0,ol,olch4iso,0,107),   &
+chch_t1(288,'C13H4     ',1,'TR        ','          ',1,0,ol,olch4iso,0,107),   &
 ! 289
-chch_t1(289,'C14H4     ',1,'TR        ','          ',0,0,ol,olch4iso,0,107),   &
+chch_t1(289,'C14H4     ',1,'TR        ','          ',1,0,ol,olch4iso,0,107),   &
 ! 290
-chch_t1(290,'C12H3D    ',1,'TR        ','          ',0,0,ol,olch4iso,0,107),   &
+chch_t1(290,'C12H3D    ',1,'TR        ','          ',1,0,ol,olch4iso,0,107),   &
 ! 291
-chch_t1(291,'C13H3D    ',1,'TR        ','          ',0,0,ol,olch4iso,0,107)    &
+chch_t1(291,'C13H3D    ',1,'TR        ','          ',1,0,ol,olch4iso,0,107)    &
 ]
 
 
@@ -8602,7 +8602,47 @@ depvel_t(162,'SEC_ORG_I ',                                                     &
  0.10,  0.10,  0.10,  0.10,  0.10,  0.10,                                      &
  0.10,  0.10,  0.10,  0.10,  0.10,  0.10,                                      &
  0.10,  0.10,  0.10,  0.10,  0.10,  0.10],                                     &
- st,a,0,132)                                                                   &
+ st,a,0,132),                                                                  &
+! 163
+depvel_t(163,'C12H4     ',                                                     &
+[0.00,  0.00,  0.00,  0.00,  0.00,  0.00,                                      &   
+ 0.00,  0.00,  0.00,  0.00,  0.00,  0.00,                                      &   
+ 0.00,  0.00,  0.00,  0.00,  0.00,  0.00,                                      &   
+ 0.00,  0.00,  0.00,  0.00,  0.00,  0.00,                                      &   
+ 0.00,  0.00,  0.00,  0.00,  0.00,  0.00],                                     & 
+ ol,olch4iso,0,107),                                                           &
+! 164
+depvel_t(164,'C13H4     ',                                                     &
+[0.00,  0.00,  0.00,  0.00,  0.00,  0.00,                                      &   
+ 0.00,  0.00,  0.00,  0.00,  0.00,  0.00,                                      &   
+ 0.00,  0.00,  0.00,  0.00,  0.00,  0.00,                                      &   
+ 0.00,  0.00,  0.00,  0.00,  0.00,  0.00,                                      &   
+ 0.00,  0.00,  0.00,  0.00,  0.00,  0.00],                                     & 
+ ol,olch4iso,0,107),                                                           &
+! 165
+depvel_t(165,'C14H4     ',                                                     &
+[0.00,  0.00,  0.00,  0.00,  0.00,  0.00,                                      &   
+ 0.00,  0.00,  0.00,  0.00,  0.00,  0.00,                                      &   
+ 0.00,  0.00,  0.00,  0.00,  0.00,  0.00,                                      &   
+ 0.00,  0.00,  0.00,  0.00,  0.00,  0.00,                                      &   
+ 0.00,  0.00,  0.00,  0.00,  0.00,  0.00],                                     & 
+ ol,olch4iso,0,107),                                                           &
+! 166
+depvel_t(166,'C12H3D    ',                                                     &
+[0.00,  0.00,  0.00,  0.00,  0.00,  0.00,                                      &   
+ 0.00,  0.00,  0.00,  0.00,  0.00,  0.00,                                      &   
+ 0.00,  0.00,  0.00,  0.00,  0.00,  0.00,                                      &   
+ 0.00,  0.00,  0.00,  0.00,  0.00,  0.00,                                      &   
+ 0.00,  0.00,  0.00,  0.00,  0.00,  0.00],                                     & 
+ ol,olch4iso,0,107),                                                           &
+! 167
+depvel_t(167,'C13H3D    ',                                                     &
+[0.00,  0.00,  0.00,  0.00,  0.00,  0.00,                                      &   
+ 0.00,  0.00,  0.00,  0.00,  0.00,  0.00,                                      &   
+ 0.00,  0.00,  0.00,  0.00,  0.00,  0.00,                                      &   
+ 0.00,  0.00,  0.00,  0.00,  0.00,  0.00,                                      &   
+ 0.00,  0.00,  0.00,  0.00,  0.00,  0.00],                                     & 
+ ol,olch4iso,0,107)                                                            &
 ]
 
 ! ----------------------------------------------------------------------

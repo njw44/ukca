@@ -338,7 +338,10 @@ IF (first) THEN
       d0(j) = d_h2o * SQRT(m_h2o / m_onitu)
     CASE ('CO        ')
       d0(j) = 1.86e-5
-    CASE ('CH4       ')
+    ! Methane isotopic fractionation accounted for in surface resistance
+    ! calculations - set all isopotologues to use the same d0.   
+    CASE ('CH4       ', 'C12H4     ', 'C13H4     ', 'C14H4    ', &
+          'C12H3D    ', 'C13H3D    ')
       IF (ukca_config%l_fix_improve_drydep) THEN
         ! Tang et al 2015 https://doi.org/10.5194/acp-15-5585-2015
         d0(j) = 2.2e-5

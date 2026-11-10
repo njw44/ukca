@@ -286,6 +286,9 @@ REAL(KIND=jprb)               :: zhook_handle
 
 CHARACTER(LEN=*), PARAMETER :: RoutineName='UKCA_SURFDDR'
 
+! Methane isotopologues
+LOGICAL :: l_ch4_uptk_active 
+REAL    :: alpha_soil
 
 ! Set up standard resistance array rsurf on first call only
 IF (lhook) CALL dr_hook(ModuleName//':'//RoutineName,zhook_in,zhook_handle)
@@ -754,6 +757,14 @@ IF (first) THEN
         ELSE
           rsurf(:,n)=r_null_tile(:)
         END IF
+      !------ Methane Isotopologues ------
+      CASE ('C12H4     ', 'C13H4     ', 'C14H4     ', 'C12H3D    ', 'C13H3D    ')
+        IF (ukca_config%l_ukca_offline_ch4iso) THEN
+          rsurf(:,n) = 1.0 / r_null_tile(:)
+        ELSE
+          rsurf(:,n) = r_null_tile(:)
+        END IF  
+      !---------------------------------------------  
       CASE ('HONO      ')
         rsurf(:,n)=r_null_tile(:)
       CASE ('H2        ')
@@ -936,6 +947,14 @@ IF (first) THEN
         ELSE
           rsurf(:,n)=r_null_tile(:)
         END IF
+      !------ Methane Isotopologues ------
+      CASE ('C12H4     ', 'C13H4     ', 'C14H4     ', 'C12H3D    ', 'C13H3D    ')
+        IF (ukca_config%l_ukca_offline_ch4iso) THEN
+          rsurf(:,n) = 1.0 / r_null_tile(:)
+        ELSE
+          rsurf(:,n) = r_null_tile(:)
+        END IF   
+      !---------------------------------------------         
       CASE ('H2        ')
         rsurf(:,n)=r_null_tile(:)
       CASE ('HCHO      ')
@@ -2186,16 +2205,42 @@ DO j = 1, ndepd
       CALL ereport(RoutineName,errcode,cmessage)
     END IF
 
-  ELSE IF (speci(nldepd(j)) == 'CH4       ') THEN
+  ELSE IF (speci(nldepd(j)) == 'CH4       ' .OR. &
+           speci(nldepd(j)) == 'C12H4     ' .OR. &
+           speci(nldepd(j)) == 'C13H4     ' .OR. &
+           speci(nldepd(j)) == 'C14H4     ' .OR. &
+           speci(nldepd(j)) == 'C12H3D    ' .OR. &
+           speci(nldepd(j)) == 'C13H3D    ') THEN
 
+    ! Assign Kinetic Isotope Effect (KIE) scaling factor
+    SELECT CASE (speci(nldepd(j)))
+    CASE ('CH4       ', 'C12H4     ')
+      alpha_soil = 1.0
+    CASE ('C13H4     ')
+      alpha_soil = 0.9823   ! Snover and Quay (2000)
+    CASE ('C14H4     ')
+      alpha_soil = 0.9653   ! Assume mass dependent fractionation
+    CASE ('C12H3D    ')
+      alpha_soil = 0.9234   ! Snover and Quay (2000)
+    CASE ('C13H3D    ')
+      alpha_soil = 0.9070   ! Combined: 0.9823 * 0.9234
+    END SELECT
+    
     !        CH4: Calculate an uptake flux initially. The uptake
     !        flux depends on soil moisture, based on results of
     !        Reay et al. (2001). Do the PFTs Broadleaf, Needleleaf,
     !        C3 and C4 grasses first.
 
+    ! Set logical flag for active uptake
+    IF (speci(nldepd(j)) == 'CH4       ') THEN
+      l_ch4_uptk_active = ukca_config%l_ukca_emsdrvn_ch4
+    ELSE
+      l_ch4_uptk_active = ukca_config%l_ukca_offline_ch4iso
+    END IF
+    
     DO k = 1, rows
       DO i = 1, row_length
-        IF (ukca_config%l_ukca_emsdrvn_ch4) THEN
+        IF (l_ch4_uptk_active) THEN
           ! initialise to minimum uptake flux
           DO n=1,ntype
             rc(i,k,n,j) = 1.0/r_null ! uptake rate, NOT a resistance!
@@ -2214,24 +2259,29 @@ DO j = 1, ndepd
           ELSE
             f_ch4_uptk = 1.0
           END IF
-          IF (ukca_config%l_ukca_emsdrvn_ch4) THEN
+          IF (l_ch4_uptk_active) THEN
             f_ch4_uptk = MIN(MAX(f_ch4_uptk,0.0),1.0)
           ELSE
             f_ch4_uptk = MAX(f_ch4_uptk,0.0)
           END IF
           ! When l_fix_ukca_h2dd_x is retired, this could become a CASE
           IF ( .NOT. l_fix_ukca_h2dd_x ) THEN
-            IF (todo(i,k,1)) rc(i,k,1,j) = ch4_up_flux(1) * f_ch4_uptk
-            IF (todo(i,k,2)) rc(i,k,2,j) = ch4_up_flux(2) * f_ch4_uptk
-            IF (todo(i,k,3)) rc(i,k,3,j) = ch4_up_flux(3) * f_ch4_uptk
-            IF (todo(i,k,4)) rc(i,k,4,j) = ch4_up_flux(4) * f_ch4_uptk
+            IF (todo(i,k,1)) rc(i,k,1,j) = ch4_up_flux(1) * f_ch4_uptk         &
+                  * alpha_soil
+            IF (todo(i,k,2)) rc(i,k,2,j) = ch4_up_flux(2) * f_ch4_uptk         &
+                  * alpha_soil
+            IF (todo(i,k,3)) rc(i,k,3,j) = ch4_up_flux(3) * f_ch4_uptk         &
+                  * alpha_soil
+            IF (todo(i,k,4)) rc(i,k,4,j) = ch4_up_flux(4) * f_ch4_uptk         &
+                  * alpha_soil
           ELSE IF ( ntype == 9 ) THEN
             ! brd_leaf
             ! ndl_leaf
             ! c3_grass
             ! c4_grass
             DO n = brd_leaf, c4_grass ! DO n = 1,4
-              IF (todo(i,k,n)) rc(i,k,n,j) = ch4_up_flux(n) * f_ch4_uptk
+              IF (todo(i,k,n)) rc(i,k,n,j) = ch4_up_flux(n) * f_ch4_uptk       &
+                    * alpha_soil
             END DO
           ELSE IF ( ntype == 13 ) THEN
             ! brd_leaf_dec, brd_leaf_eg_trop, brd_leaf_eg_temp
@@ -2239,7 +2289,8 @@ DO j = 1, ndepd
             ! c3_grass
             ! c4_grass
             DO n = brd_leaf_dec, c4_grass ! DO n = 1,7
-              IF (todo(i,k,n)) rc(i,k,n,j) = ch4_up_flux(n) * f_ch4_uptk
+              IF (todo(i,k,n)) rc(i,k,n,j) = ch4_up_flux(n) * f_ch4_uptk       &
+                    * alpha_soil
             END DO
           ELSE IF ( (ntype == 17) .OR. (ntype == 27) ) THEN
              ! brd_leaf_dec, brd_leaf_eg_trop, brd_leaf_eg_temp
@@ -2247,7 +2298,8 @@ DO j = 1, ndepd
              ! c3_grass, c3_crop, c3_pasture
              ! c4_grass, c4_crop, c4_pasture
             DO n = brd_leaf_dec, c4_pasture ! DO n = 1,11
-              IF (todo(i,k,n)) rc(i,k,n,j) = ch4_up_flux(n) * f_ch4_uptk
+              IF (todo(i,k,n)) rc(i,k,n,j) = ch4_up_flux(n) * f_ch4_uptk       &
+                    * alpha_soil
             END DO
           ELSE
             ! ntype must equal 9, 13, 17, 27
@@ -2295,15 +2347,16 @@ DO j = 1, ndepd
               ELSE
                 f_ch4_uptk = 1.0
               END IF
-              IF (ukca_config%l_ukca_emsdrvn_ch4) THEN
+              IF (l_ch4_uptk_active) THEN
                 f_ch4_uptk = MIN(MAX(f_ch4_uptk,0.0),1.0)
               ELSE
                 f_ch4_uptk = MAX(f_ch4_uptk,0.0)
               END IF
-              IF (todo(i,k,n)) rc(i,k,n,j) = ch4_up_flux(n) * f_ch4_uptk
+              IF (todo(i,k,n)) rc(i,k,n,j) = ch4_up_flux(n) * f_ch4_uptk       &
+                   * alpha_soil
             END IF
           ELSE
-            IF (ukca_config%l_ukca_emsdrvn_ch4) THEN
+            IF (l_ch4_uptk_active) THEN
               rc(i,k,n,j) = 1.0/r_null ! uptake rate, NOT a resistance!
             ELSE
               rc(i,k,n,j) = r_null
@@ -2335,15 +2388,16 @@ DO j = 1, ndepd
                 ELSE
                   f_ch4_uptk = 1.0
                 END IF
-                IF (ukca_config%l_ukca_emsdrvn_ch4) THEN
+                IF (l_ch4_uptk_active) THEN
                   f_ch4_uptk = MIN(MAX(f_ch4_uptk,0.0),1.0)
                 ELSE
                   f_ch4_uptk = MAX(f_ch4_uptk,0.0)
                 END IF
-                IF (todo(i,k,n)) rc(i,k,n,j) = ch4_up_flux(n) * f_ch4_uptk
+                IF (todo(i,k,n)) rc(i,k,n,j) = ch4_up_flux(n) * f_ch4_uptk     &
+                     * alpha_soil
               END IF
             ELSE
-              IF (ukca_config%l_ukca_emsdrvn_ch4) THEN
+              IF (l_ch4_uptk_active) THEN
                 rc(i,k,n,j) = 1.0/r_null ! uptake rate, NOT a resistance!
               ELSE
                 rc(i,k,n,j) = r_null
@@ -2386,16 +2440,16 @@ DO j = 1, ndepd
               ELSE
                 f_ch4_uptk = 1.0
               END IF
-              IF (ukca_config%l_ukca_emsdrvn_ch4) THEN
+              IF (l_ch4_uptk_active) THEN
                 f_ch4_uptk = MIN(MAX(f_ch4_uptk,0.0),1.0)
               ELSE
                 f_ch4_uptk = MAX(f_ch4_uptk,0.0)
               END IF
               IF (todo(i,k,soil)) rc(i,k,soil,j) = ch4_up_flux(soil) *         &
-                                                   f_ch4_uptk
+                                                   f_ch4_uptk * alpha_soil
             END IF
           ELSE
-            IF (ukca_config%l_ukca_emsdrvn_ch4) THEN
+            IF (l_ch4_uptk_active) THEN
               rc(i,k,n,j) = 1.0/r_null ! uptake rate, NOT a resistance!
             ELSE
               rc(i,k,n,j) = r_null
@@ -2425,16 +2479,16 @@ DO j = 1, ndepd
               ELSE
                 f_ch4_uptk = 1.0
               END IF
-              IF (ukca_config%l_ukca_emsdrvn_ch4) THEN
+              IF (l_ch4_uptk_active) THEN
                 f_ch4_uptk = MIN(MAX(f_ch4_uptk,0.0),1.0)
               ELSE
                 f_ch4_uptk = MAX(f_ch4_uptk,0.0)
               END IF
               IF (todo(i,k,soil)) rc(i,k,soil,j) = ch4_up_flux(soil) *         &
-                                                   f_ch4_uptk
+                                                   f_ch4_uptk * alpha_soil
             END IF
           ELSE
-            IF (ukca_config%l_ukca_emsdrvn_ch4) THEN
+            IF (l_ch4_uptk_active) THEN
               rc(i,k,n,j) = 1.0/r_null ! uptake rate, NOT a resistance!
             ELSE
               rc(i,k,n,j) = r_null
@@ -2447,7 +2501,7 @@ DO j = 1, ndepd
     !         Convert CH4 uptake fluxes (ug m-2 h-1) to
     !         resistance (s m-1).
 
-    IF (ukca_config%l_ukca_emsdrvn_ch4) THEN
+    IF (l_ch4_uptk_active) THEN
 
       DO n = 1, ntype
         DO k = 1, rows
