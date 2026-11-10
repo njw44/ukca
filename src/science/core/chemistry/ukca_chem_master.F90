@@ -109,7 +109,7 @@ INTEGER, PARAMETER :: n_chch_master = 367 ! number of known species
 INTEGER, PARAMETER :: n_het_master  =  18 ! number of heterogeneous reactions
 INTEGER, PARAMETER :: n_dry_master  = 163 ! number of dry deposition reactions
 INTEGER, PARAMETER :: n_wet_master  = 160 ! number of wet deposition reactions
-INTEGER, PARAMETER :: n_bimol_master = 1221 ! number of bimolecular reactions
+INTEGER, PARAMETER :: n_bimol_master = 1267 ! number of bimolecular reactions
 INTEGER, PARAMETER :: n_ratj_master = 183 ! number of photolysis reactions
 INTEGER, PARAMETER :: n_ratt_master = 116 ! number of termolecular reactions
 
@@ -5962,11 +5962,12 @@ ratb_t1(646,'OH        ','NRU12OOH  ','NOA       ','CO        ','OH        ',  &
 '          ',2.65e-11,  0.00,    0.00, 0.00, 0.00, 0.00, 0.00,cs,0,0,107)      &
 ]
 
-! Start and end bounds for FINAL section of ratb_defs.
+! Start and end bounds for the 17th section of ratb_defs.
 ! This one must end on n_bimol_master!
 ! Remember to increment n_bimol_master if you add a reaction in any ratb array
 n_ratb_s = n_ratb_e+1
-ratb_defs_master(n_ratb_s:n_bimol_master) = [                                  &
+n_ratb_e = n_ratb_s+105
+ratb_defs_master(n_ratb_s:n_ratb_e) = [                                  &
 ! B647
 ratb_t1(647,'OH        ','HOC2H4OOH ','HOCH2CHO  ','OH        ','          ',  &
 '          ',2.13e-11,  0.00,    0.00, 0.00, 0.00, 0.00, 0.00,cs,0,0,107),     &
@@ -6286,7 +6287,13 @@ ratb_t1(745,'HO2       ','EtCO3     ','OH        ','EtOO      ','CO2       ',  &
 ! CH4 photolysis for offline oxidants scheme
 ! Reaction rate is read in via prescribed field JCH4
 ratb_t1(746,'CH4       ','JCH4      ','NULL6     ','          ','          ',  &
-'          ',1.0,  0.00,  0.0, 0.00, 0.00, 0.00, 0.00,ol,olch4,0,107),         &
+'          ',1.0,  0.00,  0.0, 0.00, 0.00, 0.00, 0.00,ol,olch4,0,107)          &
+] 
+! Start and end bounds for the FINAL section of ratb_defs.
+! This one must end on n_bimol_master!
+! Remember to increment n_bimol_master if you add a reaction in any ratb array
+n_ratb_s = n_ratb_e+1
+ratb_defs_master(n_ratb_s:n_bimol_master) = [                                  &
 !
 !--------------------------------------------------------------------
 ! Methane Isotopologue Chemistry for offline oxidants 
@@ -6461,13 +6468,13 @@ ratb_t1(775,'C14H4    ','Cl        ','          ','          ','          ',  &
                                                                      0 ,107), &
 ratb_t1(775,'C14H4    ','Cl        ','          ','          ','          ',  &
 '          ', 6.25000e-12, 0.00, 1270.00, 0.00, 0.00, 0.00, 0.00,ol,olch4iso, &
-                                                                     0 ,121), &                                
+                                                                     0 ,121), &      
 !--- Reaction: C14H4 Photolysis ---
-ratb_t1(770,'C14H4     ','JCH4      ','NULL6     ','          ','          ', &
+ratb_t1(776,'C14H4     ','JCH4      ','NULL6     ','          ','          ', &
 '          ', 1.00, 0.00, 0.0, 0.00, 0.00, 0.00, 0.00,ol,olch4iso, 0,107),    &
 ! --- Reaction: C14H4 Radioactive Decay (t_1/2 = 5730 years) ---
 ! Rate: k_decay = 3.83308e-12 s^-1
-ratb_t1(772,'C14H4    ','          ','          ','          ','          ',  &
+ratb_t1(777,'C14H4    ','          ','          ','          ','          ',  &
 '          ', 3.83308e-12, 0.00,    0.00, 0.00, 0.00, 0.00, 0.00,ol,olch4iso, &
                                                                      0 ,107)  &
 ]

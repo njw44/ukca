@@ -429,11 +429,14 @@ ELSE IF (ukca_config%l_ukca_offline) THEN
      ! methane isotopologues
      n_chem_tracers = 6
      n_chem_emissions = n_chem_emissions + 6
+     nr_therm = 42 !(11 base + 31 isotopologie reactions)
   ELSE IF (ukca_config%l_ukca_offline_ch4) THEN
     n_chem_tracers = 1
     n_chem_emissions = n_chem_emissions + 1
+    nr_therm = 17 ! 11 base + 6 ratb_t1 CH4 reactions)
   ELSE
-    n_chem_tracers = 0
+     n_chem_tracers = 0
+     nr_therm = 11
   END IF
  
   ! add extra allocation for microplastics
@@ -442,7 +445,7 @@ ELSE IF (ukca_config%l_ukca_offline) THEN
   END IF
 
   ALLOCATE(em_chem_spec(n_chem_emissions+n_3d_emissions))
-  nr_therm       = 11      ! ratb + ratt, unused ?
+  ! nr_therm       = 11      ! ratb + ratt, unused ? - moved up
   nr_phot        = 0
   nmax_strat_fluxdiags = n_chem_tracers
 
